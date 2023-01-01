@@ -9,7 +9,7 @@ export class RegisterDto implements Pick<User, 'email' | 'name' | 'password'> {
   @IsNotEmpty()
   @Matches(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/, {
     message:
-      'Password must has at least 8-16 characters and contains digit, lower case and upper case characters',
+      'Password must has at least 8-16 characters and contains digit, symbol, lower case and upper case characters',
   })
   password: string;
 
