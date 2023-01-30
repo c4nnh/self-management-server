@@ -56,6 +56,7 @@ export class AuthService {
         email: true,
         name: true,
         image: true,
+        currencyId: true,
       },
     });
 
@@ -76,6 +77,7 @@ export class AuthService {
         name: true,
         image: true,
         password: true,
+        currencyId: true,
       },
     });
 
@@ -106,6 +108,7 @@ export class AuthService {
         name: true,
         image: true,
         password: true,
+        currencyId: true,
       },
     });
 
@@ -125,22 +128,31 @@ export class AuthService {
         name: true,
         email: true,
         image: true,
+        currency: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
     if (!user) throw new NotFoundException('User does not exist');
 
-    return user;
+    return {
+      ...user,
+      currency: user.currency.name,
+    };
   }
 
-  private genToken(dto: Pick<UserEntity, 'id'>): Token {
-    const { id: userId } = dto;
+  private genToken(dto: Pick<UserEntity, 'id' | 'currencyId'>): Token {
+    const { id: userId, currencyId } = dto;
 
     return {
-      accessToken: this.jwtService.sign({ userId }),
+      accessToken: this.jwtService.sign({ userId, currencyId }),
       refreshToken: this.jwtService.sign(
         {
           userId,
+          currencyId,
         },
         {
           expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRED'),

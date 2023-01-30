@@ -2,15 +2,19 @@ import { PickType } from '@nestjs/swagger';
 import { UserEntity } from '../../users/entities/user.entity';
 import { Token } from '../entities/token.entity';
 
-export class MeResponse extends PickType(UserEntity, [
+export class UserResponse extends PickType(UserEntity, [
   'id',
   'email',
   'name',
   'image',
 ]) {}
 
+export class MeResponse extends UserResponse {
+  currency: string;
+}
+
 export class ResgisterResponse {
-  user: MeResponse;
+  user: UserResponse;
   token: Token;
 }
 
