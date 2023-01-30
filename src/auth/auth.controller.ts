@@ -30,7 +30,6 @@ export class AuthController {
   }
 
   @Put('refresh-token')
-  @UseGuards(AuthGuard)
   @ApiBearerAuth()
   refreshToken(@Body() dto: RefreshTokenDto) {
     return this.authService.refreshToken(dto.refreshToken);
