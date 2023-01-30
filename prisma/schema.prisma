@@ -18,9 +18,15 @@ model Currency {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  User User[]
+  users        User[]
+  transactions Transaction[]
 
   @@map("currency")
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 model User {
@@ -33,6 +39,7 @@ model User {
   address  String?
   hometown String?
   password String
+  role     Role      @default(USER)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -55,10 +62,12 @@ model Transaction {
   description String?
   type        TransactionType @default(EXPENSE)
   amount      Float
-  currency    String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  currency   Currency @relation(fields: [currencyId], references: [id])
+  currencyId String
 
   @@map("transaction")
 }

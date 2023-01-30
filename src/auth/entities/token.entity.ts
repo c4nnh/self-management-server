@@ -1,3 +1,5 @@
+import { Role } from '@prisma/client';
+
 export class Token {
   accessToken: string;
   refreshToken: string;
@@ -5,4 +7,5 @@ export class Token {
 
 export class TokenPayload {
   userId: string;
+  role: Role;
 }

@@ -56,6 +56,7 @@ export class AuthService {
         email: true,
         name: true,
         image: true,
+        role: true,
         currencyId: true,
       },
     });
@@ -77,6 +78,7 @@ export class AuthService {
         name: true,
         image: true,
         password: true,
+        role: true,
         currencyId: true,
       },
     });
@@ -108,6 +110,7 @@ export class AuthService {
         name: true,
         image: true,
         password: true,
+        role: true,
         currencyId: true,
       },
     });
@@ -128,6 +131,7 @@ export class AuthService {
         name: true,
         email: true,
         image: true,
+        role: true,
         currency: {
           select: {
             name: true,
@@ -144,15 +148,16 @@ export class AuthService {
     };
   }
 
-  private genToken(dto: Pick<UserEntity, 'id' | 'currencyId'>): Token {
-    const { id: userId, currencyId } = dto;
+  private genToken(dto: Pick<UserEntity, 'id' | 'role' | 'currencyId'>): Token {
+    const { id: userId, currencyId, role } = dto;
 
     return {
-      accessToken: this.jwtService.sign({ userId, currencyId }),
+      accessToken: this.jwtService.sign({ userId, currencyId, role }),
       refreshToken: this.jwtService.sign(
         {
           userId,
           currencyId,
+          role,
         },
         {
           expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRED'),
