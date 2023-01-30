@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -16,6 +17,7 @@ import {
   MeResponse,
   ResgisterResponse,
 } from './response/auth.response';
+import { CurrenciesService } from '../currencies/currencies.service';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +25,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
+    private readonly currenciesService: CurrenciesService,
   ) {}
 
   async register(dto: RegisterDto): Promise<ResgisterResponse> {
@@ -34,10 +37,19 @@ export class AuthService {
 
     if (checkEmail) throw new ConflictException('This email has been exist!');
 
+    const firstCurrency = await this.currenciesService.getFirstCurrency();
+
+    if (!firstCurrency) {
+      throw new BadRequestException(
+        'Currency is not configured. Contact admin for more information',
+      );
+    }
+
     const user = await this.prisma.user.create({
       data: {
         ...dto,
         password: this.hashPassword(dto.password),
+        currencyId: firstCurrency.id,
       },
       select: {
         id: true,

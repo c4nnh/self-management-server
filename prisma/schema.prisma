@@ -10,6 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Currency {
+  id String @id @default(uuid())
+
+  name String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User User[]
+
+  @@map("currency")
+}
+
 model User {
   id String @id @default(uuid())
 
@@ -24,5 +37,28 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  currency   Currency @relation(fields: [currencyId], references: [id])
+  currencyId String
+
   @@map("user")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model Transaction {
+  id String @id @default(uuid())
+
+  title       String
+  description String?
+  type        TransactionType @default(EXPENSE)
+  amount      Float
+  currency    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("transaction")
 }

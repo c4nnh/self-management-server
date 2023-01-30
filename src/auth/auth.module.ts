@@ -4,14 +4,14 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtConfig } from './jwt.config';
 import { AuthGuard } from './auth.guard';
-import { DbModule } from '../db/db.module';
+import { CurrenciesModule } from '../currencies/currencies.module';
 
 @Module({
   imports: [
     JwtModule.registerAsync({
       useClass: JwtConfig,
     }),
-    DbModule,
+    CurrenciesModule,
   ],
   providers: [AuthService, AuthGuard],
   controllers: [AuthController],
