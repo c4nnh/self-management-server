@@ -18,6 +18,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('Self management API')
@@ -28,6 +29,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(parseInt(process.env.PORT || '5000'));
+  await app.listen(process.env.PORT);
 }
 bootstrap();
