@@ -44,8 +44,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  currency   Currency? @relation(fields: [currencyId], references: [id])
-  currencyId String?
+  currency     Currency?     @relation(fields: [currencyId], references: [id])
+  currencyId   String?
+  transactions Transaction[]
 
   @@map("user")
 }
@@ -68,6 +69,8 @@ model Transaction {
 
   currency   Currency @relation(fields: [currencyId], references: [id])
   currencyId String
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
 
   @@map("transaction")
 }
