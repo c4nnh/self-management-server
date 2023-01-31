@@ -10,12 +10,11 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
       transform: true,
+      whitelist: true,
       transformOptions: {
         enableImplicitConversion: true,
       },
-      forbidNonWhitelisted: true,
     }),
   );
   app.setGlobalPrefix('api');

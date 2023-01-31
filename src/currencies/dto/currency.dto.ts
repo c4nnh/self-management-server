@@ -6,3 +6,9 @@ export class CreateCurrencyDto implements Pick<Currency, 'name'> {
   @IsString()
   name: string;
 }
+
+export class UpdateCurrencyDto implements Pick<Currency, 'name'> {
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+}
