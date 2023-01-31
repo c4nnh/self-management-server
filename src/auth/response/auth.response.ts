@@ -1,4 +1,5 @@
 import { PickType } from '@nestjs/swagger';
+import { Currency } from '@prisma/client';
 import { UserEntity } from '../../users/entities/user.entity';
 import { Token } from '../entities/token.entity';
 
@@ -10,7 +11,7 @@ export class UserResponse extends PickType(UserEntity, [
 ]) {}
 
 export class MeResponse extends UserResponse {
-  currency: string;
+  currency?: Pick<Currency, 'id' | 'name'>;
 }
 
 export class ResgisterResponse {

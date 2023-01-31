@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -17,7 +16,6 @@ import {
   MeResponse,
   ResgisterResponse,
 } from './response/auth.response';
-import { CurrenciesService } from '../currencies/currencies.service';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +23,6 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
-    private readonly currenciesService: CurrenciesService,
   ) {}
 
   async register(dto: RegisterDto): Promise<ResgisterResponse> {
@@ -37,19 +34,10 @@ export class AuthService {
 
     if (checkEmail) throw new ConflictException('This email has been exist!');
 
-    const firstCurrency = await this.currenciesService.getFirstCurrency();
-
-    if (!firstCurrency) {
-      throw new BadRequestException(
-        'Currency is not configured. Contact admin for more information',
-      );
-    }
-
     const user = await this.prisma.user.create({
       data: {
         ...dto,
         password: this.hashPassword(dto.password),
-        currencyId: firstCurrency.id,
       },
       select: {
         id: true,
@@ -57,7 +45,6 @@ export class AuthService {
         name: true,
         image: true,
         role: true,
-        currencyId: true,
       },
     });
 
@@ -79,7 +66,6 @@ export class AuthService {
         image: true,
         password: true,
         role: true,
-        currencyId: true,
       },
     });
 
@@ -111,7 +97,6 @@ export class AuthService {
         image: true,
         password: true,
         role: true,
-        currencyId: true,
       },
     });
 
@@ -134,6 +119,7 @@ export class AuthService {
         role: true,
         currency: {
           select: {
+            id: true,
             name: true,
           },
         },
@@ -142,21 +128,17 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User does not exist');
 
-    return {
-      ...user,
-      currency: user.currency.name,
-    };
+    return user;
   }
 
-  private genToken(dto: Pick<UserEntity, 'id' | 'role' | 'currencyId'>): Token {
-    const { id: userId, currencyId, role } = dto;
+  private genToken(dto: Pick<UserEntity, 'id' | 'role'>): Token {
+    const { id: userId, role } = dto;
 
     return {
-      accessToken: this.jwtService.sign({ userId, currencyId, role }),
+      accessToken: this.jwtService.sign({ userId, role }),
       refreshToken: this.jwtService.sign(
         {
           userId,
-          currencyId,
           role,
         },
         {
