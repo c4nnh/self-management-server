@@ -1,11 +1,7 @@
-import { UserEntity } from '../entities/user.entity';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateUserDto
-  implements Pick<UserEntity, 'email' | 'name' | 'password'>
-{
-  email: string;
-
-  name: string;
-
-  password: string;
+export class UpdateUserCurrencyDto {
+  @IsString()
+  @IsNotEmpty()
+  currencyId: string;
 }

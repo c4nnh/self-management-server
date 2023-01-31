@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@prisma/client';
@@ -26,17 +27,20 @@ export class AuthGuard implements CanActivate {
     const match = authHeader.match(/^Bearer (?<token>.+)$/);
     if (!match || !match.groups.token) return false;
     const user = this.authService.verifyToken(match.groups.token);
-    if (!user) return false;
+
+    if (!user) throw new UnauthorizedException('You are unauthorized');
 
     const roles =
       this.reflector.get<string[]>(ROLES_KEY, context.getHandler()) || [];
 
-    if (!roles.length) return true;
+    if (!roles.length) {
+      request.user = user;
+      return true;
+    }
 
     if (user.role !== Role.ADMIN && !roles.some((r) => r === user.role))
       throw new ForbiddenException('You have no permission');
 
-    request.user = user;
     return true;
   }
 }

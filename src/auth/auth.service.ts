@@ -88,7 +88,7 @@ export class AuthService {
 
     const user = await this.prisma.user.findFirst({
       where: {
-        id: token.userId,
+        id: token.id,
       },
       select: {
         id: true,
@@ -107,10 +107,10 @@ export class AuthService {
   }
 
   async me(userPayload: TokenPayload): Promise<MeResponse> {
-    const { userId } = userPayload;
+    const { id } = userPayload;
 
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
+      where: { id },
       select: {
         id: true,
         name: true,
@@ -132,13 +132,13 @@ export class AuthService {
   }
 
   private genToken(dto: Pick<UserEntity, 'id' | 'role'>): Token {
-    const { id: userId, role } = dto;
+    const { id, role } = dto;
 
     return {
-      accessToken: this.jwtService.sign({ userId, role }),
+      accessToken: this.jwtService.sign({ id, role }),
       refreshToken: this.jwtService.sign(
         {
-          userId,
+          id,
           role,
         },
         {

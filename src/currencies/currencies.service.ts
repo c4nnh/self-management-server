@@ -114,7 +114,7 @@ export class CurrenciesService {
     return true;
   };
 
-  private checkExist = async (id: string) => {
+  checkExist = async (id: string) => {
     const currency = await this.prisma.currency.findUnique({
       where: { id },
     });
