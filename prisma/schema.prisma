@@ -47,6 +47,7 @@ model User {
   currency     Currency?     @relation(fields: [currencyId], references: [id])
   currencyId   String?
   transactions Transaction[]
+  assets       Asset[]
 
   @@map("user")
 }
@@ -74,4 +75,19 @@ model Transaction {
   userId     String
 
   @@map("transaction")
+}
+
+model Asset {
+  id String @id @default(uuid())
+
+  name   String
+  images String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner  User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@map("asset")
 }

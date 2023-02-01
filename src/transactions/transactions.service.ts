@@ -80,7 +80,7 @@ export class TransactionsService {
         offset,
         totalItem,
       },
-      items: items,
+      items,
     };
   };
 
