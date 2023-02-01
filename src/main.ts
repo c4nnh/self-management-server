@@ -2,6 +2,7 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import admin, { ServiceAccount } from 'firebase-admin';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +19,32 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix('api');
+
+  const fbAdminConfig: ServiceAccount = {
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  };
+
+  admin.initializeApp({
+    credential: admin.credential.cert(fbAdminConfig),
+    storageBucket: process.env.FIREBASE_BUCKET_NAME,
+  });
+
+  admin
+    .storage()
+    .bucket(process.env.FIREBASE_BUCKET_NAME)
+    .setCorsConfiguration([
+      {
+        origin: ['*'],
+        method: ['*'],
+        maxAgeSeconds: 3600,
+        responseHeader: ['Content-Type', 'Access-Control-Allow-Origin'],
+      },
+    ])
+    .then(() => {
+      this.app.storage().bucket(process.env.FIREBASE_BUCKET_NAME).makePublic();
+    });
 
   const config = new DocumentBuilder()
     .setTitle('Self management API')
