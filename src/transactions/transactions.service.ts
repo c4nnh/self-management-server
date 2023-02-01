@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CurrenciesService } from '../currencies/currencies.service';
 import { PrismaService } from '../db/prisma.service';
+import { formatPaginationResponse } from '../utils';
 import { GetTransactionsArgs } from './args/transaction.args';
 import { CreateTransactionDto } from './dto/transaction.dto';
 import {
@@ -20,19 +21,28 @@ export class TransactionsService {
     userId: string,
     args: GetTransactionsArgs,
   ): Promise<PaginationTransactionResponse> => {
-    const { title, from, to, limit, offset } = args;
-    console.log(args);
+    const { title, type, from, to, limit, offset } = args;
 
     const where: Prisma.TransactionWhereInput = {
       userId,
-      createdAt: {
+      date: {
         gte: from,
         lte: to,
       },
-      title: {
-        contains: title || '',
-      },
     };
+
+    if (title) {
+      where.title = {
+        contains: title,
+        mode: 'insensitive',
+      };
+    }
+
+    if (type) {
+      where.type = {
+        equals: type,
+      };
+    }
 
     const [totalItem, items] = await this.prisma.$transaction([
       this.prisma.transaction.count({
@@ -48,11 +58,11 @@ export class TransactionsService {
       }),
     ]);
 
-    return {
+    return formatPaginationResponse<TransactionResponse>({
       totalItem,
-      totalPage: Math.ceil(totalItem / limit),
+      limit,
       items,
-    };
+    });
   };
 
   create = async (

@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
+import { GetTransactionsArgs } from './args/transaction.args';
 import { CreateTransactionDto } from './dto/transaction.dto';
 import { TransactionsService } from './transactions.service';
 
@@ -20,7 +21,7 @@ export class TransactionsController {
   constructor(private readonly service: TransactionsService) {}
 
   @Get()
-  getMany(@Req() request, @Query() args) {
+  getMany(@Req() request, @Query() args: GetTransactionsArgs) {
     return this.service.getMany(request.user.id, args);
   }
 

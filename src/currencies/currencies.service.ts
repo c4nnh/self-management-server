@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../db/prisma.service';
+import { formatPaginationResponse } from '../utils';
 import { GetCurrenciesArgs } from './args/currency.args';
 import { CreateCurrencyDto, UpdateCurrencyDto } from './dto/currency.dto';
 import { CurrencyEntity } from './entities/currency.entity';
@@ -43,11 +44,11 @@ export class CurrenciesService {
       }),
     ]);
 
-    return {
+    return formatPaginationResponse<CurrencyEntity>({
       totalItem,
-      totalPage: Math.ceil(totalItem / limit),
+      limit,
       items,
-    };
+    });
   };
 
   create = async (dto: CreateCurrencyDto): Promise<CurrencyEntity> => {
