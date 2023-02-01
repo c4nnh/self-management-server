@@ -1,6 +1,7 @@
 import { TransactionType } from '@prisma/client';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
+import * as moment from 'moment';
 import { PaginationArgs } from '../../utils';
 
 export class GetTransactionsArgs extends PaginationArgs {
@@ -14,8 +15,11 @@ export class GetTransactionsArgs extends PaginationArgs {
   type?: TransactionType;
 
   @IsDate()
-  from?: Date = new Date(1900, 0, 1);
+  from?: Date = new Date(1970, 0, 1);
 
   @IsDate()
-  to?: Date = new Date();
+  @Transform(({ value }: TransformFnParams) =>
+    moment(value).endOf('day').toDate(),
+  )
+  to?: Date = moment().endOf('day').toDate();
 }

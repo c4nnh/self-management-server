@@ -9,7 +9,6 @@ export class TransactionResponse extends OmitType(TransactionEntity, [
 export class PaginationTransactionResponse
   implements PaginationResponse<TransactionResponse>
 {
-  totalItem: number;
-  totalPage: number;
+  pagination: { totalItem: number; limit: number; offset: number };
   items: TransactionResponse[];
 }

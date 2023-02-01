@@ -4,7 +4,6 @@ import { CurrencyEntity } from '../entities/currency.entity';
 export class PaginationCurrencyResponse
   implements PaginationResponse<CurrencyEntity>
 {
-  totalItem: number;
-  totalPage: number;
+  pagination: { totalItem: number; limit: number; offset: number };
   items: CurrencyEntity[];
 }

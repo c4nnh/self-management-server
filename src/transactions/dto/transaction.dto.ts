@@ -1,5 +1,6 @@
 import { TransactionType } from '@prisma/client';
 import {
+  IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -16,6 +17,10 @@ export class CreateTransactionDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsDate()
+  @IsOptional()
+  date?: Date;
 
   @IsEnum(TransactionType)
   type: TransactionType;

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CurrenciesService } from '../currencies/currencies.service';
 import { PrismaService } from '../db/prisma.service';
-import { formatPaginationResponse } from '../utils';
 import { GetTransactionsArgs } from './args/transaction.args';
 import { CreateTransactionDto } from './dto/transaction.dto';
 import {
@@ -58,11 +57,14 @@ export class TransactionsService {
       }),
     ]);
 
-    return formatPaginationResponse<TransactionResponse>({
-      totalItem,
-      limit,
-      items,
-    });
+    return {
+      pagination: {
+        limit,
+        offset,
+        totalItem,
+      },
+      items: items,
+    };
   };
 
   create = async (

@@ -1,5 +1,8 @@
 export class PaginationResponse<T> {
-  totalItem: number;
-  totalPage: number;
+  pagination: {
+    totalItem: number;
+    limit: number;
+    offset: number;
+  };
   items: T[];
 }
