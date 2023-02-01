@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -10,7 +13,10 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { GetTransactionsArgs } from './args/transaction.args';
-import { CreateTransactionDto } from './dto/transaction.dto';
+import {
+  CreateTransactionDto,
+  UpdateTransactionDto,
+} from './dto/transaction.dto';
 import { TransactionsService } from './transactions.service';
 
 @Controller('transactions')
@@ -28,5 +34,19 @@ export class TransactionsController {
   @Post()
   create(@Req() request, @Body() dto: CreateTransactionDto) {
     return this.service.create(request.user.id, dto);
+  }
+
+  @Put(':id')
+  update(
+    @Req() request,
+    @Param('id') id: string,
+    @Body() dto: UpdateTransactionDto,
+  ) {
+    return this.service.update(request.user.id, id, dto);
+  }
+
+  @Delete(':id')
+  delete(@Req() request, @Param('id') id: string) {
+    return this.service.delete(request.user.id, id);
   }
 }

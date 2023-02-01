@@ -1,9 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CurrenciesService } from '../currencies/currencies.service';
 import { PrismaService } from '../db/prisma.service';
 import { GetTransactionsArgs } from './args/transaction.args';
-import { CreateTransactionDto } from './dto/transaction.dto';
+import {
+  CreateTransactionDto,
+  UpdateTransactionDto,
+} from './dto/transaction.dto';
 import {
   PaginationTransactionResponse,
   TransactionResponse,
@@ -20,7 +27,8 @@ export class TransactionsService {
     userId: string,
     args: GetTransactionsArgs,
   ): Promise<PaginationTransactionResponse> => {
-    const { title, type, from, to, limit, offset } = args;
+    const { title, type, from, to, limit, offset, orderBy, orderDirection } =
+      args;
 
     const where: Prisma.TransactionWhereInput = {
       userId,
@@ -43,6 +51,14 @@ export class TransactionsService {
       };
     }
 
+    const order: Prisma.TransactionOrderByWithRelationInput = {};
+
+    if (orderBy) {
+      order[orderBy] = orderDirection || Prisma.SortOrder.desc;
+    } else {
+      order.date = Prisma.SortOrder.desc;
+    }
+
     const [totalItem, items] = await this.prisma.$transaction([
       this.prisma.transaction.count({
         where,
@@ -54,6 +70,7 @@ export class TransactionsService {
         include: {
           currency: true,
         },
+        orderBy: order,
       }),
     ]);
 
@@ -82,5 +99,55 @@ export class TransactionsService {
         currency: true,
       },
     });
+  };
+
+  update = async (
+    userId: string,
+    transactionId: string,
+    dto: UpdateTransactionDto,
+  ): Promise<TransactionResponse> => {
+    const transaction = await this.checkExist(transactionId);
+
+    if (transaction.userId !== userId) {
+      throw new ForbiddenException('This transaction does not belong to you');
+    }
+
+    if (dto.currencyId && dto.currencyId !== transaction.currencyId) {
+      await this.currenciesService.checkExist(dto.currencyId);
+    }
+
+    return this.prisma.transaction.update({
+      where: { id: transactionId },
+      data: dto,
+      include: {
+        currency: true,
+      },
+    });
+  };
+
+  delete = async (userId: string, transactionId: string) => {
+    const transaction = await this.checkExist(transactionId);
+
+    if (transaction.userId !== userId) {
+      throw new ForbiddenException('This transaction does not belong to you');
+    }
+
+    await this.prisma.transaction.delete({
+      where: { id: transactionId },
+    });
+
+    return true;
+  };
+
+  private checkExist = async (id: string) => {
+    const transaction = await this.prisma.transaction.findUnique({
+      where: { id },
+    });
+
+    if (!transaction) {
+      throw new NotFoundException('This transaction does not exist');
+    }
+
+    return transaction;
   };
 }
