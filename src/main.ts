@@ -43,7 +43,7 @@ async function bootstrap() {
       },
     ])
     .then(() => {
-      this.app.storage().bucket(process.env.FIREBASE_BUCKET_NAME).makePublic();
+      admin.storage().bucket(process.env.FIREBASE_BUCKET_NAME).makePublic();
     });
 
   const config = new DocumentBuilder()
