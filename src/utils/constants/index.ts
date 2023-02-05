@@ -1,5 +1,7 @@
 export const IMAGE_FOLDER = {
-  asset: 'asset',
+  ASSET: 'asset',
 };
 
-export type ImageFolder = keyof typeof IMAGE_FOLDER;
+export const EVENT_EMITTER = {
+  DELETE_IMAGES: 'DELETE_IMAGES',
+};

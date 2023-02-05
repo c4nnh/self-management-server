@@ -7,5 +7,6 @@ import { ImagesService } from './images.service';
   imports: [AuthModule],
   controllers: [ImagesController],
   providers: [ImagesService],
+  exports: [ImagesService],
 })
 export class ImagesModule {}

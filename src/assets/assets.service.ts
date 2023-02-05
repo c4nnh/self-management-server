@@ -4,15 +4,20 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../db/prisma.service';
+import { EVENT_EMITTER, IMAGE_FOLDER } from '../utils';
 import { GetAssetsArgs } from './args/asset.args';
 import { CreateAssetDto, UpdateAssetDto } from './dto/asset.dto';
 import { PaginationAssetResponse } from './response/asset.response';
 
 @Injectable()
 export class AssetsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   getMany = async (
     userId: string,
@@ -109,8 +114,10 @@ export class AssetsService {
       (item) => !dto.images.includes(item),
     );
 
-    // TODO
-    // delete unused images in gcp
+    this.eventEmitter.emit(EVENT_EMITTER.DELETE_IMAGES, {
+      urls: deletedUrls,
+      folder: IMAGE_FOLDER.ASSET,
+    });
 
     return this.prisma.asset.update({
       where: { id: assetId },
@@ -125,8 +132,10 @@ export class AssetsService {
       throw new ForbiddenException('This asset does not belong to you');
     }
 
-    // TODO
-    // delete unused images in gcp
+    this.eventEmitter.emit(EVENT_EMITTER.DELETE_IMAGES, {
+      urls: asset.images || [],
+      folder: IMAGE_FOLDER.ASSET,
+    });
 
     await this.prisma.asset.delete({
       where: { id: assetId },
