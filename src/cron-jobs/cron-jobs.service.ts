@@ -12,10 +12,9 @@ export class CronJobsService {
     private readonly imagesService: ImagesService,
   ) {}
 
-  //   @Cron('0 0 0 * * *', {
-  //     timeZone: 'Asia/Ho_Chi_Minh',
-  //   })
-  @Cron('*/10 * * * * *', {})
+  @Cron('0 0 0 * * *', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+  })
   async deleteUnusedImages() {
     // get asset images
     const assetImageObjects = await this.prisma.asset.findMany({
