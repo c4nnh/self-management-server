@@ -12,43 +12,57 @@ export class ImagesService {
     return this.createSignedUrl(userId, folder, dto);
   };
 
+  createSignedUrlForUserAvatar = async (
+    userId: string,
+    dto: UploadImageDto,
+  ) => {
+    const folder: string = IMAGE_FOLDER.USER_AVATAR;
+    return this.createSignedUrl(userId, folder, dto);
+  };
+
   private createSignedUrl = async (
     userId: string,
     folder: string,
     dto: UploadImageDto,
   ): Promise<CreateSignedUrlResponse> => {
-    const bucketName = process.env.FIREBASE_BUCKET_NAME;
-    const { fileName, fileType } = dto;
-    const ts = moment().format('yyyyMMDDHHmmssSSSS');
-    const id = `${folder}/${userId}_${ts}_${fileName}`;
+    try {
+      const bucketName = process.env.FIREBASE_BUCKET_NAME;
+      const { fileName, fileType } = dto;
+      const ts = moment().format('yyyyMMDDHHmmssSSSS');
+      const id = `${folder}/${userId}_${ts}_${fileName}`;
 
-    const res = await admin
-      .storage()
-      .bucket(bucketName)
-      .file(id)
-      .getSignedUrl({
-        version: 'v4',
-        action: 'write',
-        expires: new Date().getTime() + 1000 * 60 * 1, // 2 minutes
-        contentType: fileType,
+      const res = await admin
+        .storage()
+        .bucket(bucketName)
+        .file(id)
+        .getSignedUrl({
+          version: 'v4',
+          action: 'write',
+          expires: new Date().getTime() + 1000 * 60 * 1, // 2 minutes
+          contentType: fileType,
+        });
+
+      if (!res.length) {
+        throw new InternalServerErrorException(
+          'Can not get signed url now. Please try again later',
+        );
+      }
+
+      const url = await admin.storage().bucket().file(id).publicUrl();
+
+      await admin.storage().bucket().file(id).delete({
+        ignoreNotFound: true,
       });
 
-    if (!res.length) {
+      return {
+        uploadUrl: res[0],
+        publicUrl: url,
+      };
+    } catch {
       throw new InternalServerErrorException(
-        'Can not get signed url now. Please try again later',
+        'Something went wrong. Please try again',
       );
     }
-
-    const url = await admin.storage().bucket().file(id).publicUrl();
-
-    await admin.storage().bucket().file(id).delete({
-      ignoreNotFound: true,
-    });
-
-    return {
-      uploadUrl: res[0],
-      publicUrl: url,
-    };
   };
 
   deleteImages = async (imageIds: string[]) => {

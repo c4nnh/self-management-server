@@ -15,4 +15,9 @@ export class ImagesController {
   createSignedUrlForAsset(@Req() request, @Body() dto: UploadImageDto) {
     return this.service.createSignedUrlForAsset(request.user.id, dto);
   }
+
+  @Post('signed-url/user-avatars')
+  createSignedUrlForUserAvatar(@Req() request, @Body() dto: UploadImageDto) {
+    return this.service.createSignedUrlForUserAvatar(request.user.id, dto);
+  }
 }

@@ -26,25 +26,29 @@ async function bootstrap() {
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
   };
 
-  admin.initializeApp({
-    credential: admin.credential.cert(fbAdminConfig),
-    storageBucket: process.env.FIREBASE_BUCKET_NAME,
-  });
-
-  admin
-    .storage()
-    .bucket(process.env.FIREBASE_BUCKET_NAME)
-    .setCorsConfiguration([
-      {
-        origin: ['*'],
-        method: ['*'],
-        maxAgeSeconds: 3600,
-        responseHeader: ['Content-Type', 'Access-Control-Allow-Origin'],
-      },
-    ])
-    .then(() => {
-      admin.storage().bucket(process.env.FIREBASE_BUCKET_NAME).makePublic();
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert(fbAdminConfig),
+      storageBucket: process.env.FIREBASE_BUCKET_NAME,
     });
+
+    admin
+      .storage()
+      .bucket(process.env.FIREBASE_BUCKET_NAME)
+      .setCorsConfiguration([
+        {
+          origin: ['*'],
+          method: ['*'],
+          maxAgeSeconds: 3600,
+          responseHeader: ['Content-Type', 'Access-Control-Allow-Origin'],
+        },
+      ])
+      .then(() => {
+        admin.storage().bucket(process.env.FIREBASE_BUCKET_NAME).makePublic();
+      });
+  } catch {
+    console.error('Can not create firebase admin app');
+  }
 
   const config = new DocumentBuilder()
     .setTitle('Self management API')

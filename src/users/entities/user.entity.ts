@@ -5,18 +5,14 @@ export class UserEntity implements User {
   constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);
   }
-  role: Role;
-
-  @Exclude()
-  currencyId: string;
-
-  currency: Currency;
 
   id: string;
 
   name: string;
 
   email: string;
+
+  role: Role;
 
   image: string | null;
 
@@ -32,4 +28,9 @@ export class UserEntity implements User {
   createdAt: Date;
 
   updatedAt: Date;
+
+  @Exclude()
+  currencyId: string;
+
+  currency: Currency;
 }

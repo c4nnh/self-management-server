@@ -16,39 +16,43 @@ export class CronJobsService {
     timeZone: 'Asia/Ho_Chi_Minh',
   })
   async deleteUnusedImages() {
-    // get asset images
-    const assetImageObjects = await this.prisma.asset.findMany({
-      select: {
-        images: true,
-      },
-    });
-    const assetImageIds = assetImageObjects.reduce(
-      (pre, curr) => [
-        ...pre,
-        ...curr.images.map((item) =>
-          getImageIdFromUrl(item, IMAGE_FOLDER.ASSET),
-        ),
-      ],
-      [],
-    );
+    try {
+      // get asset images
+      const assetImageObjects = await this.prisma.asset.findMany({
+        select: {
+          images: true,
+        },
+      });
+      const assetImageIds = assetImageObjects.reduce(
+        (pre, curr) => [
+          ...pre,
+          ...curr.images.map((item) =>
+            getImageIdFromUrl(item, IMAGE_FOLDER.ASSET),
+          ),
+        ],
+        [],
+      );
 
-    // get images from firebase storage
-    const firebaseImagesResponse = await admin
-      .storage()
-      .bucket(process.env.FIREBASE_BUCKET_NAME)
-      .getFiles({});
+      // get images from firebase storage
+      const firebaseImagesResponse = await admin
+        .storage()
+        .bucket(process.env.FIREBASE_BUCKET_NAME)
+        .getFiles({});
 
-    const firebaseImageIds: string[] = firebaseImagesResponse.reduce(
-      (pre, curr) => [...pre, ...curr.map((item) => item.name)],
-      [],
-    );
+      const firebaseImageIds: string[] = firebaseImagesResponse.reduce(
+        (pre, curr) => [...pre, ...curr.map((item) => item.name)],
+        [],
+      );
 
-    // get unused images
-    const unusedImageIds = firebaseImageIds.filter(
-      (item) => !assetImageIds.includes(item),
-    );
+      // get unused images
+      const unusedImageIds = firebaseImageIds.filter(
+        (item) => !assetImageIds.includes(item),
+      );
 
-    // delete unused images
-    await this.imagesService.deleteImages(unusedImageIds);
+      // delete unused images
+      await this.imagesService.deleteImages(unusedImageIds);
+    } catch {
+      console.error('Can not execute job');
+    }
   }
 }

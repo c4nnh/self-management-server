@@ -16,6 +16,7 @@ import {
   MeResponse,
   ResgisterResponse,
 } from './response/auth.response';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
+    private readonly uersService: UsersService,
   ) {}
 
   async register(dto: RegisterDto): Promise<ResgisterResponse> {
@@ -109,26 +111,7 @@ export class AuthService {
   async me(userPayload: TokenPayload): Promise<MeResponse> {
     const { id } = userPayload;
 
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        role: true,
-        currency: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
-
-    if (!user) throw new NotFoundException('User does not exist');
-
-    return user;
+    return this.uersService.checkExist(id);
   }
 
   private genToken(dto: Pick<UserEntity, 'id' | 'role'>): Token {
