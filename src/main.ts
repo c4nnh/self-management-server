@@ -1,8 +1,8 @@
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import admin, { ServiceAccount } from 'firebase-admin';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -49,6 +49,10 @@ async function bootstrap() {
   } catch {
     console.error('Can not create firebase admin app');
   }
+
+  // app.use((_, __, next) => {
+  //   setTimeout(() => next(), 1000);
+  // });
 
   const config = new DocumentBuilder()
     .setTitle('Self management API')
