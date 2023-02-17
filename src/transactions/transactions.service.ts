@@ -27,16 +27,33 @@ export class TransactionsService {
     userId: string,
     args: GetTransactionsArgs,
   ): Promise<PaginationTransactionResponse> => {
-    const { title, type, from, to, limit, offset, orderBy, orderDirection } =
-      args;
+    const {
+      title,
+      type,
+      amountFrom,
+      amountTo,
+      dateFrom,
+      dateTo,
+      limit,
+      offset,
+      orderBy,
+      orderDirection,
+    } = args;
 
     const where: Prisma.TransactionWhereInput = {
       userId,
       date: {
-        gte: from,
-        lte: to,
+        gte: dateFrom,
+        lte: dateTo,
+      },
+      amount: {
+        gte: amountFrom,
       },
     };
+
+    if (amountTo) {
+      (where.amount as Prisma.FloatFilter).lte = amountTo;
+    }
 
     if (title) {
       where.title = {
