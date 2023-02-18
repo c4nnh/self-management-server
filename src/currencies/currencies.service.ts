@@ -20,7 +20,7 @@ export class CurrenciesService {
   getMany = async (
     args: GetCurrenciesArgs,
   ): Promise<PaginationCurrencyResponse> => {
-    const { name, limit, offset } = args;
+    const { name, limit, offset, isPaged } = args;
 
     const where: Prisma.CurrencyWhereInput = {
       name: {
@@ -28,6 +28,19 @@ export class CurrenciesService {
         mode: 'insensitive',
       },
     };
+
+    if (!isPaged) {
+      const items = await this.prisma.currency.findMany({ where });
+      return {
+        pagination: {
+          totalItem: items.length,
+          limit,
+          offset,
+          isPaged,
+        },
+        items,
+      };
+    }
 
     const [totalItem, items] = await this.prisma.$transaction([
       this.prisma.currency.count({

@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import {
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -29,4 +30,8 @@ export class PaginationArgs {
   @IsNotEmpty()
   @IsEnum(Object.keys(Prisma.SortOrder))
   orderDirection?: Prisma.SortOrder;
+
+  @IsBoolean()
+  @IsOptional()
+  isPaged?: boolean = true;
 }

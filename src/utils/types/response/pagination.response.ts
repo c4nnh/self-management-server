@@ -3,6 +3,7 @@ export class PaginationResponse<T> {
     totalItem: number;
     limit: number;
     offset: number;
+    isPaged?: boolean;
   };
   items: T[];
 }
