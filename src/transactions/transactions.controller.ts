@@ -31,6 +31,11 @@ export class TransactionsController {
     return this.service.getMany(request.user.id, args);
   }
 
+  @Get(':id')
+  getDetail(@Req() request, @Param('id') id: string) {
+    return this.service.getDetail(request.user.id, id);
+  }
+
   @Post()
   create(@Req() request, @Body() dto: CreateTransactionDto) {
     return this.service.create(request.user.id, dto);

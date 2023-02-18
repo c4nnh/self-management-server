@@ -23,6 +23,26 @@ export class TransactionsService {
     private readonly currenciesService: CurrenciesService,
   ) {}
 
+  getDetail = async (
+    userId: string,
+    transactionId: string,
+  ): Promise<TransactionResponse> => {
+    const transaction = await this.prisma.transaction.findUnique({
+      where: { id: transactionId },
+      include: { currency: true },
+    });
+
+    if (!transaction) {
+      throw new NotFoundException('This transaction does not exist');
+    }
+
+    if (transaction.userId !== userId) {
+      throw new ForbiddenException('This transaction does not belong to you');
+    }
+
+    return transaction;
+  };
+
   getMany = async (
     userId: string,
     args: GetTransactionsArgs,
