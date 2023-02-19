@@ -46,7 +46,9 @@ async function bootstrap() {
       .then(() => {
         admin.storage().bucket(process.env.FIREBASE_BUCKET_NAME).makePublic();
       });
-  } catch {
+  } catch (e) {
+    console.log(e);
+
     console.error('Can not create firebase admin app');
   }
 
