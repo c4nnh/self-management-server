@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { TransactionType } from '@prisma/client';
 import { Transform, TransformFnParams } from 'class-transformer';
 import {
@@ -17,9 +18,13 @@ export class GetTransactionsArgs extends PaginationArgs {
   @Transform(({ value }: TransformFnParams) => value.trim())
   title?: string;
 
-  @IsEnum(TransactionType)
+  @IsEnum(TransactionType, { each: true })
   @IsOptional()
-  type?: TransactionType;
+  @ApiProperty({
+    enum: TransactionType,
+    isArray: true,
+  })
+  types?: TransactionType[];
 
   @IsNumber()
   @IsOptional()

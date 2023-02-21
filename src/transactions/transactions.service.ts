@@ -49,7 +49,7 @@ export class TransactionsService {
   ): Promise<PaginationTransactionResponse> => {
     const {
       title,
-      type,
+      types,
       amountFrom,
       amountTo,
       dateFrom,
@@ -82,9 +82,9 @@ export class TransactionsService {
       };
     }
 
-    if (type) {
+    if (types && types.length) {
       where.type = {
-        equals: type,
+        in: types,
       };
     }
 
