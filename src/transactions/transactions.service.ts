@@ -176,6 +176,19 @@ export class TransactionsService {
     return true;
   };
 
+  deleteMany = async (userId: string, transactionIds: string[]) => {
+    await this.prisma.transaction.deleteMany({
+      where: {
+        userId,
+        id: {
+          in: transactionIds,
+        },
+      },
+    });
+
+    return true;
+  };
+
   private checkExist = async (id: string) => {
     const transaction = await this.prisma.transaction.findUnique({
       where: { id },

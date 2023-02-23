@@ -54,4 +54,9 @@ export class TransactionsController {
   delete(@Req() request, @Param('id') id: string) {
     return this.service.delete(request.user.id, id);
   }
+
+  @Delete()
+  deleteMany(@Req() request, @Body() ids: string[]) {
+    return this.service.deleteMany(request.user.id, ids);
+  }
 }
