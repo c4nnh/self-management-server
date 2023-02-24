@@ -130,6 +130,27 @@ export class CurrenciesService {
     return true;
   };
 
+  deleteMany = async (ids: string[]) => {
+    const checkExistedTransaction = await this.prisma.transaction.findFirst({
+      where: {
+        currencyId: {
+          in: ids,
+        },
+      },
+    });
+    if (checkExistedTransaction) {
+      throw new BadRequestException(
+        'Can not delete because there is at least 1 transaction use these currencies',
+      );
+    }
+
+    await this.prisma.currency.deleteMany({
+      where: { id: { in: ids } },
+    });
+
+    return true;
+  };
+
   checkExist = async (id: string) => {
     const currency = await this.prisma.currency.findUnique({
       where: { id },

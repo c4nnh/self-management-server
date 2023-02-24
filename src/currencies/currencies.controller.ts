@@ -45,4 +45,10 @@ export class CurrenciesController {
   delete(@Param('id') id: string) {
     return this.service.delete(id);
   }
+
+  @Delete()
+  @Roles('ADMIN')
+  deleteMany(@Body() ids: string[]) {
+    return this.service.deleteMany(ids);
+  }
 }
