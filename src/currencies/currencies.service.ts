@@ -139,9 +139,7 @@ export class CurrenciesService {
       },
     });
     if (checkExistedTransaction) {
-      throw new BadRequestException(
-        'Can not delete because there is at least 1 transaction use these currencies',
-      );
+      throw new BadRequestException('One of these currencies is in used');
     }
 
     await this.prisma.currency.deleteMany({
