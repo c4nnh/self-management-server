@@ -1,15 +1,18 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { PrismaService } from '../db/prisma.service';
-import { getImageIdFromUrl, IMAGE_FOLDER } from '../utils';
 import admin from 'firebase-admin';
+import { firstValueFrom } from 'rxjs';
+import { PrismaService } from '../db/prisma.service';
 import { ImagesService } from '../images/images.service';
+import { getImageIdFromUrl, IMAGE_FOLDER } from '../utils';
 
 @Injectable()
 export class CronJobsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly imagesService: ImagesService,
+    private readonly httpService: HttpService,
   ) {}
 
   @Cron('0 0 0 * * *', {
@@ -54,5 +57,14 @@ export class CronJobsService {
     } catch {
       console.error('Can not execute job');
     }
+  }
+
+  @Cron('*/5 * * * * *')
+  async keepKSMAAwake() {
+    const resp = await firstValueFrom(
+      this.httpService.get(process.env.KEEP_SM_AWAKE_HEALTH_CHECK_END_POINT),
+    );
+    console.log(`Call to KSMA to keep awake: ${new Date()}`);
+    console.log(resp.data ? 'Successfull' : 'Failed');
   }
 }

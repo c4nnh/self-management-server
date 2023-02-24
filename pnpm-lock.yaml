@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@nestjs/axios': ^2.0.0
   '@nestjs/cli': ^9.0.0
   '@nestjs/common': ^9.0.0
   '@nestjs/config': ^2.2.0
@@ -22,6 +23,7 @@ specifiers:
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
+  axios: ^1.3.4
   class-transformer: ^0.5.1
   class-validator: ^0.14.0
   eslint: ^8.0.1
@@ -45,6 +47,7 @@ specifiers:
   typescript: ^4.3.5
 
 dependencies:
+  '@nestjs/axios': 2.0.0_2gzz2c5llujjawcmxrzdvnwnlq
   '@nestjs/common': 9.2.1_537f4dyna5eqdupcxnvaoq3vwa
   '@nestjs/config': 2.2.0_wqmgrsh4vfci5e6jx45m6crmsi
   '@nestjs/core': 9.2.1_wxxo4tebowazgokn4jthy4l4va
@@ -56,6 +59,7 @@ dependencies:
   '@nestjs/swagger': 6.1.4_4fhhxyztwhblafku3krlstrun4
   '@nestjs/websockets': 9.3.2_np7tmxq32eqwfz47gaofqc7dpi
   '@prisma/client': 4.7.1_prisma@4.7.1
+  axios: 1.3.4
   class-transformer: 0.5.1
   class-validator: 0.14.0
   firebase: 9.16.0
@@ -1414,6 +1418,20 @@ packages:
     dev: false
     optional: true
 
+  /@nestjs/axios/2.0.0_2gzz2c5llujjawcmxrzdvnwnlq:
+    resolution: {integrity: sha512-F6oceoQLEn031uun8NiommeMkRIojQqVryxQy/mK7fx0CI0KbgkJL3SloCQcsOD+agoEnqKJKXZpEvL6FNswJg==}
+    peerDependencies:
+      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0
+      axios: ^1.3.1
+      reflect-metadata: ^0.1.12
+      rxjs: ^6.0.0 || ^7.0.0
+    dependencies:
+      '@nestjs/common': 9.2.1_537f4dyna5eqdupcxnvaoq3vwa
+      axios: 1.3.4
+      reflect-metadata: 0.1.13
+      rxjs: 7.6.0
+    dev: false
+
   /@nestjs/cli/9.1.5:
     resolution: {integrity: sha512-rSp26+Nv7PFtYrRSP18Gv5ZK8rRSc2SCCF5wh4SdZaVGgkxShpNq9YEfI+ik/uziN3KC5o74ppYRXGj+aHGVsA==}
     engines: {node: '>= 12.9.0'}
@@ -2484,7 +2502,16 @@ packages:
 
   /asynckit/0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
-    dev: true
+
+  /axios/1.3.4:
+    resolution: {integrity: sha512-toYm+Bsyl6VC5wSkfkbbNB6ROv7KY93PEBBL6xyDczaIHasAiv4wPqQ/c4RjoQzipxRD2W5g21cOqQulZ7rHwQ==}
+    dependencies:
+      follow-redirects: 1.15.2
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /babel-jest/28.1.3_@babel+core@7.20.5:
     resolution: {integrity: sha512-epUaPOEWMk3cWX0M/sPvCHHCe9fMFAa/9hXEgKP8nFfNl/jlGkE9ucq9NqkZGXLDduCJYS0UvSlPUwC0S+rH6Q==}
@@ -2864,7 +2891,6 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
-    dev: true
 
   /commander/2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -3013,7 +3039,6 @@ packages:
   /delayed-stream/1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
-    dev: true
 
   /depd/2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
@@ -3628,6 +3653,16 @@ packages:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
     dev: true
 
+  /follow-redirects/1.15.2:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
+
   /fork-ts-checker-webpack-plugin/7.2.13_qqxisngxjbp7lstdk7boexbu3e:
     resolution: {integrity: sha512-fR3WRkOb4bQdWB/y7ssDUlVdrclvwtyCUIHCfivAoYxq9dF7XfrDKbMdZIfwJ7hxIAqkYSGeU7lLJE6xrxIBdg==}
     engines: {node: '>=12.13.0', yarn: '>=1.0.0'}
@@ -3662,7 +3697,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
-    dev: true
 
   /formidable/2.1.1:
     resolution: {integrity: sha512-0EcS9wCFEzLvfiks7omJ+SiYJAiD+TzK4Pcw1UlUoGnhUxDcMKjt0P7x8wEb0u6OHu8Nb98WG3nxtlF5C7bvUQ==}
@@ -5550,6 +5584,10 @@ packages:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
+
+  /proxy-from-env/1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
 
   /pseudomap/1.0.2:
     resolution: {integrity: sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==}
