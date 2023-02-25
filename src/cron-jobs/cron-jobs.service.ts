@@ -19,6 +19,7 @@ export class CronJobsService {
     timeZone: 'Asia/Ho_Chi_Minh',
   })
   async deleteUnusedImages() {
+    console.log(`Delete unused images: ${new Date()}`);
     try {
       // get asset images
       const assetImageObjects = await this.prisma.asset.findMany({
@@ -61,10 +62,8 @@ export class CronJobsService {
 
   @Cron('0 */5 * * * *')
   async keepKSMAAwake() {
-    const resp = await firstValueFrom(
+    await firstValueFrom(
       this.httpService.get(process.env.KEEP_SM_AWAKE_HEALTH_CHECK_END_POINT),
     );
-    console.log(`Call to KSMA to keep awake: ${new Date()}`);
-    console.log(resp.data ? 'Successfull' : 'Failed');
   }
 }
