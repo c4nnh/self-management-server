@@ -15,8 +15,6 @@ import { PaginationCurrencyResponse } from './responses/currency.response';
 export class CurrenciesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getFirstCurrency = () => this.prisma.currency.findFirst();
-
   getDetail = (id: string) => this.checkExist(id);
 
   getMany = async (

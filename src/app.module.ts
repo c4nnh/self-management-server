@@ -13,6 +13,7 @@ import { GatewayModule } from './gateway/gateway.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CronJobsModule } from './cron-jobs/cron-jobs.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { LoansModule } from './loans/loans.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ImagesModule,
     GatewayModule,
     CronJobsModule,
+    LoansModule,
   ],
   controllers: [AppController],
   providers: [AppService],
