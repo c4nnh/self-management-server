@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import admin from 'firebase-admin';
-import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../db/prisma.service';
 import { ImagesService } from '../images/images.service';
 import { getImageIdFromUrl, IMAGE_FOLDER } from '../utils';
@@ -60,10 +59,10 @@ export class CronJobsService {
     }
   }
 
-  @Cron('0 */5 * * * *')
-  async keepKSMAAwake() {
-    await firstValueFrom(
-      this.httpService.get(process.env.KEEP_SM_AWAKE_HEALTH_CHECK_END_POINT),
-    );
-  }
+  // @Cron('0 */5 * * * *')
+  // async keepKSMAAwake() {
+  //   await firstValueFrom(
+  //     this.httpService.get(process.env.KEEP_SM_AWAKE_HEALTH_CHECK_END_POINT),
+  //   );
+  // }
 }

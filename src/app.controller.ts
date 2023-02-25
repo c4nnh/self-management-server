@@ -6,7 +6,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class AppController {
   @Get('health-check')
   healthCheck() {
-    console.log(`Health check from KSMA: ${new Date()}`);
+    // console.log(`Health check from KSMA: ${new Date()}`);
     return true;
   }
 }
