@@ -4,11 +4,13 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { createHash } from 'crypto';
+import { CURRENCY_MASTER_DATA_SELECT } from 'src/utils';
 import { PrismaService } from '../db/prisma.service';
 import { UserEntity } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { Token, TokenPayload } from './entities/token.entity';
 import {
@@ -16,7 +18,6 @@ import {
   MeResponse,
   ResgisterResponse,
 } from './response/auth.response';
-import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -68,6 +69,9 @@ export class AuthService {
         image: true,
         password: true,
         role: true,
+        currency: {
+          select: CURRENCY_MASTER_DATA_SELECT,
+        },
       },
     });
 
@@ -97,8 +101,10 @@ export class AuthService {
         email: true,
         name: true,
         image: true,
-        password: true,
         role: true,
+        currency: {
+          select: CURRENCY_MASTER_DATA_SELECT,
+        },
       },
     });
 

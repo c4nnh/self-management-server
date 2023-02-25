@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { CURRENCY_MASTER_DATA_SELECT } from './currency';
 
 export const USER_DETAIL_SELECT: Prisma.UserSelect = {
   id: true,
@@ -10,9 +11,6 @@ export const USER_DETAIL_SELECT: Prisma.UserSelect = {
   address: true,
   hometown: true,
   currency: {
-    select: {
-      id: true,
-      name: true,
-    },
+    select: CURRENCY_MASTER_DATA_SELECT,
   },
 };
