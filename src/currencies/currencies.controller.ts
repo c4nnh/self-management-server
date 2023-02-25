@@ -28,6 +28,11 @@ export class CurrenciesController {
     return this.service.getMany(args);
   }
 
+  @Get(':id')
+  getDetail(@Param('id') id: string) {
+    return this.service.getDetail(id);
+  }
+
   @Post()
   @Roles('ADMIN')
   create(@Body() dto: CreateCurrencyDto) {

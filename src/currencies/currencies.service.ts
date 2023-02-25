@@ -17,6 +17,8 @@ export class CurrenciesService {
 
   getFirstCurrency = () => this.prisma.currency.findFirst();
 
+  getDetail = (id: string) => this.checkExist(id);
+
   getMany = async (
     args: GetCurrenciesArgs,
   ): Promise<PaginationCurrencyResponse> => {
