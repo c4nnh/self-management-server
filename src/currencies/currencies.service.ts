@@ -36,6 +36,12 @@ export class CurrenciesService {
             mode: 'insensitive',
           },
         },
+        {
+          code: {
+            contains: search || '',
+            mode: 'insensitive',
+          },
+        },
       ],
     };
 
@@ -77,27 +83,14 @@ export class CurrenciesService {
   };
 
   create = async (dto: CreateCurrencyDto): Promise<CurrencyEntity> => {
-    const { name, symbol } = dto;
-    const existedCurrency = await this.prisma.currency.findFirst({
+    const { code } = dto;
+    const existedCurrency = await this.prisma.currency.findUnique({
       where: {
-        OR: [
-          {
-            name: {
-              equals: name,
-              mode: 'insensitive',
-            },
-          },
-          {
-            symbol: {
-              equals: symbol,
-              mode: 'insensitive',
-            },
-          },
-        ],
+        code,
       },
     });
     if (existedCurrency) {
-      throw new ConflictException('This currency already existed');
+      throw new ConflictException('This code already existed');
     }
     return this.prisma.currency.create({
       data: dto,
@@ -108,30 +101,21 @@ export class CurrenciesService {
     id: string,
     dto: UpdateCurrencyDto,
   ): Promise<CurrencyEntity> => {
-    const { name, symbol } = dto;
+    const { name, symbol, code } = dto;
 
     const currency = await this.checkExist(id);
-    // ignore update if new name and symbol equal to current name and symbol
-    if (currency.name === name && currency.symbol === symbol) {
+    // ignore update if new name, symbol and code equal to current name symbol and code
+    if (
+      currency.name === name &&
+      currency.symbol === symbol &&
+      currency.code === code
+    ) {
       return currency;
     }
 
     const existedCurrency = await this.prisma.currency.findFirst({
       where: {
-        OR: [
-          {
-            name: {
-              equals: name,
-              mode: 'insensitive',
-            },
-          },
-          {
-            symbol: {
-              equals: symbol,
-              mode: 'insensitive',
-            },
-          },
-        ],
+        code,
         NOT: {
           id,
         },

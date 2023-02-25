@@ -48,6 +48,9 @@ export class AuthService {
         name: true,
         image: true,
         role: true,
+        currency: {
+          select: CURRENCY_MASTER_DATA_SELECT,
+        },
       },
     });
 

@@ -4,39 +4,33 @@ const prisma = new PrismaClient();
 const defaultCurrencies: Prisma.CurrencyCreateManyInput[] = [
   {
     name: 'Việt Nam Đồng',
-    symbol: 'VNĐ',
+    symbol: '₫',
+    code: 'VND',
   },
   {
     name: 'Dollar',
     symbol: '$',
+    code: 'USD',
   },
   {
     name: 'Euro',
     symbol: '€',
+    code: 'EUR',
   },
   {
     name: 'Pound',
     symbol: '£',
+    code: 'GBP',
   },
 ];
 
 async function main() {
   const existedCurrencies = await prisma.currency.findMany({
     where: {
-      OR: [
-        {
-          name: {
-            in: defaultCurrencies.map((item) => item.name),
-            mode: 'insensitive',
-          },
-        },
-        {
-          symbol: {
-            in: defaultCurrencies.map((item) => item.symbol),
-            mode: 'insensitive',
-          },
-        },
-      ],
+      code: {
+        in: defaultCurrencies.map((item) => item.code),
+        mode: 'insensitive',
+      },
     },
   });
   const seedCurrencies = defaultCurrencies.filter(
@@ -47,7 +41,10 @@ async function main() {
   );
   if (seedCurrencies.length) {
     await prisma.currency.createMany({
-      data: seedCurrencies,
+      data: seedCurrencies.map((item) => ({
+        ...item,
+        code: item.code.toUpperCase(),
+      })),
     });
   }
 }

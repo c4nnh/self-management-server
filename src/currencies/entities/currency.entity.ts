@@ -7,6 +7,8 @@ export class CurrencyEntity implements Currency {
 
   symbol: string;
 
+  code: string;
+
   createdAt: Date;
 
   updatedAt: Date;
