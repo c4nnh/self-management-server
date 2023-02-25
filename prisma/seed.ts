@@ -1,22 +1,53 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-const defaultCurrencies = ['VNĐ', '$'];
+const defaultCurrencies: Prisma.CurrencyCreateManyInput[] = [
+  {
+    name: 'Việt Nam Đồng',
+    symbol: 'VNĐ',
+  },
+  {
+    name: 'Dollar',
+    symbol: '$',
+  },
+  {
+    name: 'Euro',
+    symbol: '€',
+  },
+  {
+    name: 'Pound',
+    symbol: '£',
+  },
+];
 
 async function main() {
   const existedCurrencies = await prisma.currency.findMany({
     where: {
-      name: {
-        in: defaultCurrencies,
-      },
+      OR: [
+        {
+          name: {
+            in: defaultCurrencies.map((item) => item.name),
+            mode: 'insensitive',
+          },
+        },
+        {
+          symbol: {
+            in: defaultCurrencies.map((item) => item.symbol),
+            mode: 'insensitive',
+          },
+        },
+      ],
     },
   });
   const seedCurrencies = defaultCurrencies.filter(
-    (item) => !existedCurrencies.map((item) => item.name).includes(item),
+    (item) =>
+      !existedCurrencies.filter(
+        (el) => el.name === item.name || el.symbol === item.symbol,
+      ).length,
   );
   if (seedCurrencies.length) {
     await prisma.currency.createMany({
-      data: seedCurrencies.map((item) => ({ name: item })),
+      data: seedCurrencies,
     });
   }
 }

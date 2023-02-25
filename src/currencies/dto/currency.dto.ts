@@ -1,14 +1,31 @@
 import { Currency } from '@prisma/client';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateCurrencyDto implements Pick<Currency, 'name'> {
+export class CreateCurrencyDto implements Pick<Currency, 'name' | 'symbol'> {
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }: TransformFnParams) => value.trim())
   name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Transform(({ value }: TransformFnParams) => value.trim())
+  symbol: string;
 }
 
-export class UpdateCurrencyDto implements Pick<Currency, 'name'> {
+export class UpdateCurrencyDto
+  implements Partial<Pick<Currency, 'name' | 'symbol'>>
+{
   @IsNotEmpty()
   @IsString()
-  name: string;
+  @IsOptional()
+  @Transform(({ value }: TransformFnParams) => value.trim())
+  name?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsOptional()
+  @Transform(({ value }: TransformFnParams) => value.trim())
+  symbol?: string;
 }

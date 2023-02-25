@@ -6,5 +6,6 @@ export class GetCurrenciesArgs extends PaginationArgs {
   @IsString()
   @IsOptional()
   @Transform(({ value }: TransformFnParams) => value.trim())
-  name?: string;
+  // Search by name and symbol
+  search?: string;
 }

@@ -20,13 +20,23 @@ export class CurrenciesService {
   getMany = async (
     args: GetCurrenciesArgs,
   ): Promise<PaginationCurrencyResponse> => {
-    const { name, limit, offset, isPaged } = args;
+    const { search, limit, offset, isPaged } = args;
 
     const where: Prisma.CurrencyWhereInput = {
-      name: {
-        contains: name || '',
-        mode: 'insensitive',
-      },
+      OR: [
+        {
+          name: {
+            contains: search || '',
+            mode: 'insensitive',
+          },
+        },
+        {
+          symbol: {
+            contains: search || '',
+            mode: 'insensitive',
+          },
+        },
+      ],
     };
 
     if (!isPaged) {
@@ -67,10 +77,23 @@ export class CurrenciesService {
   };
 
   create = async (dto: CreateCurrencyDto): Promise<CurrencyEntity> => {
-    const { name } = dto;
-    const existedCurrency = await this.prisma.currency.findUnique({
+    const { name, symbol } = dto;
+    const existedCurrency = await this.prisma.currency.findFirst({
       where: {
-        name,
+        OR: [
+          {
+            name: {
+              equals: name,
+              mode: 'insensitive',
+            },
+          },
+          {
+            symbol: {
+              equals: symbol,
+              mode: 'insensitive',
+            },
+          },
+        ],
       },
     });
     if (existedCurrency) {
@@ -85,17 +108,30 @@ export class CurrenciesService {
     id: string,
     dto: UpdateCurrencyDto,
   ): Promise<CurrencyEntity> => {
-    const { name } = dto;
+    const { name, symbol } = dto;
 
     const currency = await this.checkExist(id);
-    // ignore update if new name equal to current name
-    if (currency.name === name) {
+    // ignore update if new name and symbol equal to current name and symbol
+    if (currency.name === name && currency.symbol === symbol) {
       return currency;
     }
 
     const existedCurrency = await this.prisma.currency.findFirst({
       where: {
-        name,
+        OR: [
+          {
+            name: {
+              equals: name,
+              mode: 'insensitive',
+            },
+          },
+          {
+            symbol: {
+              equals: symbol,
+              mode: 'insensitive',
+            },
+          },
+        ],
         NOT: {
           id,
         },
@@ -103,7 +139,7 @@ export class CurrenciesService {
     });
 
     if (existedCurrency) {
-      throw new ConflictException('This name is taken');
+      throw new ConflictException('This currency already existed');
     }
 
     return this.prisma.currency.update({

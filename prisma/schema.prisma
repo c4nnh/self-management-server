@@ -13,7 +13,8 @@ datasource db {
 model Currency {
   id String @id @default(uuid())
 
-  name String @unique
+  name   String @unique
+  symbol String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

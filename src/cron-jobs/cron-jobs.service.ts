@@ -56,7 +56,7 @@ export class CronJobsService {
       // delete unused images
       await this.imagesService.deleteImages(unusedImageIds);
     } catch {
-      console.error('Can not execute job');
+      console.error('Can not execute delete unused images job');
     }
   }
 
