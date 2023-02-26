@@ -62,8 +62,10 @@ export class CronJobsService {
 
   @Cron('0 */5 * * * *')
   async keepKSMAAwake() {
-    await firstValueFrom(
-      this.httpService.get(process.env.KEEP_SM_AWAKE_HEALTH_CHECK_END_POINT),
-    );
+    if (process.env.NODE_ENV !== 'develop') {
+      await firstValueFrom(
+        this.httpService.get(process.env.KEEP_SM_AWAKE_HEALTH_CHECK_END_POINT),
+      );
+    }
   }
 }

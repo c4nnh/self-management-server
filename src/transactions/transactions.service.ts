@@ -27,14 +27,7 @@ export class TransactionsService {
     userId: string,
     transactionId: string,
   ): Promise<TransactionResponse> => {
-    const transaction = await this.prisma.transaction.findUnique({
-      where: { id: transactionId },
-      include: { currency: true },
-    });
-
-    if (!transaction) {
-      throw new NotFoundException('This transaction does not exist');
-    }
+    const transaction = await this.checkExist(transactionId);
 
     if (transaction.userId !== userId) {
       throw new ForbiddenException('This transaction does not belong to you');
@@ -143,11 +136,7 @@ export class TransactionsService {
     transactionId: string,
     dto: UpdateTransactionDto,
   ): Promise<TransactionResponse> => {
-    const transaction = await this.checkExist(transactionId);
-
-    if (transaction.userId !== userId) {
-      throw new ForbiddenException('This transaction does not belong to you');
-    }
+    const transaction = await this.getDetail(userId, transactionId);
 
     if (dto.currencyId && dto.currencyId !== transaction.currencyId) {
       await this.currenciesService.checkExist(dto.currencyId);
@@ -163,11 +152,7 @@ export class TransactionsService {
   };
 
   delete = async (userId: string, transactionId: string) => {
-    const transaction = await this.checkExist(transactionId);
-
-    if (transaction.userId !== userId) {
-      throw new ForbiddenException('This transaction does not belong to you');
-    }
+    await this.getDetail(userId, transactionId);
 
     await this.prisma.transaction.delete({
       where: { id: transactionId },
@@ -192,6 +177,7 @@ export class TransactionsService {
   private checkExist = async (id: string) => {
     const transaction = await this.prisma.transaction.findUnique({
       where: { id },
+      include: { currency: true },
     });
 
     if (!transaction) {
