@@ -15,5 +15,5 @@ export class AssetEntity implements Asset {
   @Exclude()
   userId: string;
 
-  user: User;
+  owner: User;
 }

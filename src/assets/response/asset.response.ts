@@ -2,7 +2,7 @@ import { OmitType } from '@nestjs/swagger';
 import { PaginationResponse } from '../../utils';
 import { AssetEntity } from '../entities/asset.entity';
 
-export class AssetResponse extends OmitType(AssetEntity, ['user']) {}
+export class AssetResponse extends OmitType(AssetEntity, ['owner', 'userId']) {}
 
 export class PaginationAssetResponse
   implements PaginationResponse<AssetResponse>

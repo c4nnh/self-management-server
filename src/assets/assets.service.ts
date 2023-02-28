@@ -7,7 +7,7 @@ import {
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../db/prisma.service';
-import { EVENT_EMITTER, IMAGE_FOLDER } from '../utils';
+import { ASSET_DETAIL_SELECT, EVENT_EMITTER, IMAGE_FOLDER } from '../utils';
 import { GetAssetsArgs } from './args/asset.args';
 import { CreateAssetDto, UpdateAssetDto } from './dto/asset.dto';
 import { PaginationAssetResponse } from './response/asset.response';
@@ -18,6 +18,14 @@ export class AssetsService {
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  getDetail = async (userId: string, id: string) => {
+    const asset = await this.checkExist(id);
+    if (asset.userId === userId) {
+      throw new ForbiddenException('This asset does not belong to you');
+    }
+    return asset;
+  };
 
   getMany = async (
     userId: string,
@@ -51,6 +59,7 @@ export class AssetsService {
         take: limit,
         skip: offset,
         orderBy: order,
+        select: ASSET_DETAIL_SELECT,
       }),
     ]);
 
@@ -84,11 +93,7 @@ export class AssetsService {
   };
 
   update = async (userId: string, assetId: string, dto: UpdateAssetDto) => {
-    const asset = await this.checkExist(assetId);
-
-    if (asset.userId !== userId) {
-      throw new ForbiddenException('This asset does not belong to you');
-    }
+    const asset = await this.getDetail(userId, assetId);
 
     if (dto.name) {
       const existedName = await this.prisma.asset.findFirst({
@@ -126,11 +131,7 @@ export class AssetsService {
   };
 
   delete = async (userId: string, assetId: string) => {
-    const asset = await this.checkExist(assetId);
-
-    if (asset.userId !== userId) {
-      throw new ForbiddenException('This asset does not belong to you');
-    }
+    const asset = await this.getDetail(userId, assetId);
 
     this.eventEmitter.emit(EVENT_EMITTER.DELETE_IMAGES, {
       urls: asset.images || [],
@@ -146,11 +147,9 @@ export class AssetsService {
 
   private checkExist = async (id: string) => {
     const asset = await this.prisma.asset.findUnique({ where: { id } });
-
     if (!asset) {
       throw new NotFoundException('This asset does not exist');
     }
-
     return asset;
   };
 }
