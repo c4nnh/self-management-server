@@ -24,6 +24,13 @@ const defaultCurrencies: Prisma.CurrencyCreateManyInput[] = [
   },
 ];
 
+const admin: Prisma.UserCreateInput = {
+  name: 'Admin',
+  password: '@Test12345',
+  email: 'admin@gmail.com',
+  role: 'ADMIN',
+};
+
 async function main() {
   const existedCurrencies = await prisma.currency.findMany({
     where: {
@@ -47,6 +54,9 @@ async function main() {
       })),
     });
   }
+
+  // Create admin
+  if(process.env.NODE_ENV === 'develop')
 }
 
 main()
