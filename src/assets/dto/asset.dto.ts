@@ -1,4 +1,12 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class CreateAssetDto {
   @IsString()
@@ -9,6 +17,21 @@ export class CreateAssetDto {
   @IsArray()
   @IsString({ each: true })
   images?: string[];
+
+  @IsDate()
+  @IsOptional()
+  date?: Date;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @IsNumber()
+  @Min(0)
+  price: number;
+
+  @IsString()
+  currencyId: string;
 }
 
 export class UpdateAssetDto {
@@ -21,4 +44,21 @@ export class UpdateAssetDto {
   @IsArray()
   @IsString({ each: true })
   images?: string[];
+
+  @IsDate()
+  @IsOptional()
+  date?: Date;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  price?: number;
+
+  @IsString()
+  @IsOptional()
+  currencyId?: string;
 }

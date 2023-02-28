@@ -22,7 +22,7 @@ export class TontinesService {
 
   getDetail = async (userId: string, id: string) => {
     const tontine = await this.checkExist(id);
-    if (tontine.userId === userId) {
+    if (tontine.userId !== userId) {
       throw new ForbiddenException('This tontine does not belong to you');
     }
     return tontine;
@@ -165,6 +165,9 @@ export class TontinesService {
   private checkExist = async (id: string) => {
     const tontine = await this.prisma.tontine.findUnique({
       where: { id },
+      include: {
+        currency: true,
+      },
     });
     if (!tontine) {
       throw new NotFoundException('This tontine does not exist');

@@ -1,4 +1,4 @@
-import { Asset, User } from '@prisma/client';
+import { Asset, Currency, User } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
 export class AssetEntity implements Asset {
@@ -8,6 +8,12 @@ export class AssetEntity implements Asset {
 
   images: string[];
 
+  price: number;
+
+  boughtDate: Date;
+
+  description: string;
+
   createdAt: Date;
 
   updatedAt: Date;
@@ -16,4 +22,9 @@ export class AssetEntity implements Asset {
   userId: string;
 
   owner: User;
+
+  @Exclude()
+  currencyId: string;
+
+  currency: Currency;
 }

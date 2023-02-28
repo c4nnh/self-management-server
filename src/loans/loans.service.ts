@@ -19,7 +19,9 @@ export class LoansService {
 
   getDetail = async (userId: string, id: string) => {
     const loan = await this.checkExist(id);
-    if (loan.userId === userId) {
+    console.log(loan);
+
+    if (loan.userId !== userId) {
       throw new ForbiddenException('This loan does not belong to you');
     }
     return loan;
@@ -170,6 +172,9 @@ export class LoansService {
   private checkExist = async (id: string) => {
     const loan = await this.prisma.loan.findUnique({
       where: { id },
+      include: {
+        currency: true,
+      },
     });
     if (!loan) {
       throw new NotFoundException('This loan does not exist');

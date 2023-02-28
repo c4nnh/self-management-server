@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma } from '@prisma/client';
+import { CurrenciesService } from 'src/currencies/currencies.service';
 import { PrismaService } from '../db/prisma.service';
 import { ASSET_DETAIL_SELECT, EVENT_EMITTER, IMAGE_FOLDER } from '../utils';
 import { GetAssetsArgs } from './args/asset.args';
@@ -17,11 +18,12 @@ export class AssetsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly currenciesService: CurrenciesService,
   ) {}
 
   getDetail = async (userId: string, id: string) => {
     const asset = await this.checkExist(id);
-    if (asset.userId === userId) {
+    if (asset.userId !== userId) {
       throw new ForbiddenException('This asset does not belong to you');
     }
     return asset;
@@ -31,17 +33,46 @@ export class AssetsService {
     userId: string,
     args: GetAssetsArgs,
   ): Promise<PaginationAssetResponse> => {
-    const { name, limit, offset, orderBy, orderDirection } = args;
+    const {
+      search,
+      boughtDateFrom,
+      boughtDateTo,
+      priceFrom,
+      priceTo,
+      limit,
+      offset,
+      orderBy,
+      orderDirection,
+    } = args;
 
     const where: Prisma.AssetWhereInput = {
       userId,
+      boughtDate: {
+        gte: boughtDateFrom,
+        lte: boughtDateTo,
+      },
+      price: {
+        gte: priceFrom,
+      },
     };
 
-    if (name) {
-      where.name = {
-        contains: name,
-        mode: 'insensitive',
-      };
+    if (priceTo) {
+      (where.price as Prisma.FloatFilter).lte = priceTo;
+    }
+
+    if (search) {
+      where.OR = [
+        {
+          name: {
+            contains: search,
+            mode: 'insensitive',
+          },
+          description: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      ];
     }
 
     const order: Prisma.AssetOrderByWithRelationInput = {};
@@ -95,24 +126,8 @@ export class AssetsService {
   update = async (userId: string, assetId: string, dto: UpdateAssetDto) => {
     const asset = await this.getDetail(userId, assetId);
 
-    if (dto.name) {
-      const existedName = await this.prisma.asset.findFirst({
-        where: {
-          userId,
-          name: dto.name,
-          id: {
-            not: asset.id,
-          },
-        },
-      });
-
-      if (existedName) {
-        throw new ConflictException('You already have asset with same name');
-      }
-
-      if (dto.images === undefined) {
-        return asset;
-      }
+    if (dto.currencyId && dto.currencyId !== asset.currencyId) {
+      await this.currenciesService.checkExist(dto.currencyId);
     }
 
     const deletedUrls = asset.images.filter(
@@ -146,10 +161,28 @@ export class AssetsService {
   };
 
   private checkExist = async (id: string) => {
-    const asset = await this.prisma.asset.findUnique({ where: { id } });
+    const asset = await this.prisma.asset.findUnique({
+      where: { id },
+      include: {
+        currency: true,
+      },
+    });
     if (!asset) {
       throw new NotFoundException('This asset does not exist');
     }
     return asset;
+  };
+
+  deleteMany = async (userId: string, assetIds: string[]) => {
+    await this.prisma.asset.deleteMany({
+      where: {
+        userId,
+        id: {
+          in: assetIds,
+        },
+      },
+    });
+
+    return true;
   };
 }

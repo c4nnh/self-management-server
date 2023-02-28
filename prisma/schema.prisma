@@ -24,6 +24,7 @@ model Currency {
   transactions Transaction[]
   loans        Loan[]
   tontines     Tontine[]
+  assets       Asset[]
 
   @@map("currency")
 }
@@ -86,14 +87,19 @@ model Transaction {
 model Asset {
   id String @id @default(uuid())
 
-  name   String
-  images String[] @default([])
+  name        String
+  images      String[] @default([])
+  price       Float
+  boughtDate  DateTime @default(now())
+  description String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner  User   @relation(fields: [userId], references: [id])
-  userId String
+  owner      User     @relation(fields: [userId], references: [id])
+  userId     String
+  currency   Currency @relation(fields: [currencyId], references: [id])
+  currencyId String
 
   @@map("asset")
 }

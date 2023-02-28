@@ -23,6 +23,11 @@ import { CreateAssetDto, UpdateAssetDto } from './dto/asset.dto';
 export class AssetsController {
   constructor(private readonly service: AssetsService) {}
 
+  @Get(':id')
+  getDetail(@Req() request, @Param('id') id: string) {
+    return this.service.getDetail(request.user.id, id);
+  }
+
   @Get()
   getMany(@Req() request, @Query() args: GetAssetsArgs) {
     return this.service.getMany(request.user.id, args);
@@ -41,5 +46,10 @@ export class AssetsController {
   @Delete(':id')
   delete(@Req() request, @Param('id') id: string) {
     return this.service.delete(request.user.id, id);
+  }
+
+  @Delete()
+  deleteMany(@Req() request, @Body() ids: string[]) {
+    return this.service.deleteMany(request.user.id, ids);
   }
 }

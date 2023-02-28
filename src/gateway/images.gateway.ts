@@ -9,6 +9,7 @@ export class ImagesGateway {
 
   @OnEvent(EVENT_EMITTER.DELETE_IMAGES)
   async deleteImages({ urls, folder }: { urls: string[]; folder: string }) {
+    if (!urls.length) return;
     const ids = urls.map((url) => getImageIdFromUrl(url, folder));
     await this.imagesService.deleteImages(ids);
   }
