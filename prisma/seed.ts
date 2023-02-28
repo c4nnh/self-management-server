@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import { createHash } from 'crypto';
 const prisma = new PrismaClient();
 
 const defaultCurrencies: Prisma.CurrencyCreateManyInput[] = [
@@ -56,7 +57,20 @@ async function main() {
   }
 
   // Create admin
-  if(process.env.NODE_ENV === 'develop')
+  if (process.env.NODE_ENV === 'develop') {
+    const existAdmin = await prisma.user.findUnique({
+      where: {
+        email: admin.email,
+      },
+    });
+    if (!existAdmin) {
+      const firstHash = createHash('md5').update(admin.password).digest('hex');
+      const hashedPassword = createHash('md5').update(firstHash).digest('hex');
+      await prisma.user.create({
+        data: { ...admin, password: hashedPassword },
+      });
+    }
+  }
 }
 
 main()

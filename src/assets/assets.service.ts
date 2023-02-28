@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -105,15 +104,7 @@ export class AssetsService {
   };
 
   create = async (userId: string, dto: CreateAssetDto) => {
-    const existedName = await this.prisma.asset.findFirst({
-      where: {
-        name: dto.name,
-        userId,
-      },
-    });
-    if (existedName) {
-      throw new ConflictException('You already have asset with same name');
-    }
+    await this.currenciesService.checkExist(dto.currencyId);
 
     return this.prisma.asset.create({
       data: {
