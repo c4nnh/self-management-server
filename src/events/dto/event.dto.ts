@@ -1,13 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { EventPriority } from '@prisma/client';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import * as moment from 'moment-timezone';
 import {
-  IsAfterYesterday,
-  IsDateWithoutTime,
-  IsTime,
-} from 'src/utils/validator';
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinDate,
+} from 'class-validator';
+import * as moment from 'moment-timezone';
+import { IsDateWithoutTime, IsTime } from 'src/utils/validator';
 
 export class CreateEventDto {
   @IsString()
@@ -20,7 +22,7 @@ export class CreateEventDto {
   description?: string;
 
   @IsDateWithoutTime()
-  @IsAfterYesterday()
+  @MinDate(moment().tz(process.env.TZ).startOf('day').toDate())
   @ApiProperty({
     example: '2023-01-01',
   })

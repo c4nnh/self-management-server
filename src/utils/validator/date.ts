@@ -2,30 +2,6 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
 import * as moment from 'moment-timezone';
 import { DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT } from '../constants';
 
-export const IsAfterYesterday = (validationOptions?: ValidationOptions) => {
-  return function (object: object, propertyName: string) {
-    registerDecorator({
-      name: 'isAfterYesterday',
-      target: object.constructor,
-      propertyName: propertyName,
-      options: {
-        message: `${propertyName} must be after yesterday`,
-        ...validationOptions,
-      },
-      validator: {
-        validate(value: Date) {
-          const validateDate = moment(value, DEFAULT_DATE_FORMAT);
-          if (!validateDate.isValid()) {
-            return false;
-          }
-          const yesterday = moment().subtract(1, 'day');
-          return validateDate.isAfter(yesterday);
-        },
-      },
-    });
-  };
-};
-
 export const IsDateWithoutTime = (validationOptions?: ValidationOptions) => {
   return function (object: object, propertyName: string) {
     registerDecorator({
