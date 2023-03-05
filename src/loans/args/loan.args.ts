@@ -1,6 +1,6 @@
 import { Transform, TransformFnParams } from 'class-transformer';
 import { IsDate, IsNumber, IsOptional, IsString, Min } from 'class-validator';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import { PaginationArgs } from 'src/utils';
 
 export class GetLoansArgs extends PaginationArgs {

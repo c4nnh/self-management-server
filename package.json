@@ -41,7 +41,7 @@
     "class-validator": "^0.14.0",
     "firebase": "^9.16.0",
     "firebase-admin": "^11.5.0",
-    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.41",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"

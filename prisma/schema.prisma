@@ -55,6 +55,7 @@ model User {
   assets       Asset[]
   loans        Loan[]
   tontines     Tontine[]
+  events       Event[]
 
   @@map("user")
 }
@@ -139,4 +140,39 @@ model Tontine {
   currencyId String
 
   @@map("tontine")
+}
+
+enum EventPriority {
+  SUPER_LOW
+  LOW
+  MEDIUM
+  HIGH
+  SUPER_HIGH
+}
+
+enum EventStatus {
+  UPCOMING
+  IN_PROGRESS
+  DONE
+}
+
+model Event {
+  id String @id @default(uuid())
+
+  title       String
+  description String?
+  startDate   DateTime      @db.Date
+  endDate     DateTime      @db.Date
+  startTime   String?
+  endTime     String?
+  priority    EventPriority @default(MEDIUM)
+  status      EventStatus   @default(UPCOMING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@map("event")
 }

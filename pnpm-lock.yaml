@@ -32,7 +32,7 @@ specifiers:
   firebase: ^9.16.0
   firebase-admin: ^11.5.0
   jest: 28.1.2
-  moment: ^2.29.4
+  moment-timezone: ^0.5.41
   prettier: ^2.3.2
   prisma: ^4.7.1
   reflect-metadata: ^0.1.13
@@ -64,7 +64,7 @@ dependencies:
   class-validator: 0.14.0
   firebase: 9.16.0
   firebase-admin: 11.5.0
-  moment: 2.29.4
+  moment-timezone: 0.5.41
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
   rxjs: 7.6.0
@@ -5155,6 +5155,12 @@ packages:
     hasBin: true
     dev: false
     optional: true
+
+  /moment-timezone/0.5.41:
+    resolution: {integrity: sha512-e0jGNZDOHfBXJGz8vR/sIMXvBIGJJcqFjmlg9lmE+5KX1U7/RZNMswfD8nKnNCnQdKTIj50IaRKwl1fvMLyyRg==}
+    dependencies:
+      moment: 2.29.4
+    dev: false
 
   /moment/2.29.4:
     resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}

@@ -48,7 +48,6 @@ async function bootstrap() {
       });
   } catch (e) {
     console.log(e);
-
     console.error('Can not create firebase admin app');
   }
 

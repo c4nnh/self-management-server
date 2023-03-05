@@ -9,7 +9,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import { PaginationArgs } from '../../utils';
 
 export class GetTransactionsArgs extends PaginationArgs {

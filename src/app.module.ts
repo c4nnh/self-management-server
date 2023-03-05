@@ -15,6 +15,7 @@ import { CronJobsModule } from './cron-jobs/cron-jobs.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoansModule } from './loans/loans.module';
 import { TontinesModule } from './tontines/tontines.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { TontinesModule } from './tontines/tontines.module';
     CronJobsModule,
     LoansModule,
     TontinesModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
