@@ -2,7 +2,7 @@
 CREATE TYPE "EventPriority" AS ENUM ('SUPER_LOW', 'LOW', 'MEDIUM', 'HIGH', 'SUPER_HIGH');
 
 -- CreateEnum
-CREATE TYPE "EventStatus" AS ENUM ('UPCOMING', 'IN_PROGRESS', 'DONE');
+CREATE TYPE "EventStatus" AS ENUM ('UPCOMING', 'IN_PROGRESS', 'DONE', 'CANCELED');
 
 -- CreateTable
 CREATE TABLE "event" (

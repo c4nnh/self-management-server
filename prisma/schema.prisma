@@ -154,6 +154,7 @@ enum EventStatus {
   UPCOMING
   IN_PROGRESS
   DONE
+  CANCELED
 }
 
 model Event {
