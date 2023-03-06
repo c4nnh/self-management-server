@@ -19,7 +19,6 @@ export class LoansService {
 
   getDetail = async (userId: string, id: string) => {
     const loan = await this.checkExist(id);
-    console.log(loan);
 
     if (loan.userId !== userId) {
       throw new ForbiddenException('This loan does not belong to you');

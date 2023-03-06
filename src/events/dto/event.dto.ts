@@ -9,7 +9,13 @@ import {
   MinDate,
 } from 'class-validator';
 import * as moment from 'moment-timezone';
-import { IsDateWithoutTime, IsTime } from 'src/utils/validator';
+import {
+  IsDateAfterOtherField,
+  IsDateWithoutTime,
+  IsTime,
+  IsTimeBeforeOtherField,
+  MustAppearWith,
+} from 'src/utils/validator';
 
 export class CreateEventDto {
   @IsString()
@@ -30,14 +36,19 @@ export class CreateEventDto {
   startDate: Date;
 
   @IsDateWithoutTime()
+  @IsDateAfterOtherField('startDate')
   @ApiProperty({
     example: '2023-01-01',
   })
-  @Transform(({ value }) => moment(value).tz(process.env.TZ).toDate())
+  @Transform(({ value }) =>
+    moment(value).tz(process.env.TZ).endOf('day').toDate(),
+  )
   endDate: Date;
 
   @IsOptional()
   @IsTime()
+  @MustAppearWith('endTime')
+  @IsTimeBeforeOtherField('endTime')
   @ApiPropertyOptional({
     example: '10:30:00',
     nullable: true,

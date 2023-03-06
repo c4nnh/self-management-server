@@ -6,8 +6,10 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  MaxDate,
   Min,
 } from 'class-validator';
+import * as moment from 'moment-timezone';
 
 export class CreateTransactionDto {
   @IsString()
@@ -20,6 +22,7 @@ export class CreateTransactionDto {
 
   @IsDate()
   @IsOptional()
+  @MaxDate(moment().tz(process.env.TZ).endOf('day').toDate())
   date?: Date;
 
   @IsEnum(TransactionType)
@@ -45,6 +48,7 @@ export class UpdateTransactionDto {
 
   @IsDate()
   @IsOptional()
+  @MaxDate(moment().tz(process.env.TZ).endOf('day').toDate())
   date?: Date;
 
   @IsEnum(TransactionType)

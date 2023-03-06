@@ -1,6 +1,15 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { GetEventsArgs } from './args/event.args';
 import { CreateEventDto } from './dto/event.dto';
 import { EventsService } from './events.service';
 
@@ -11,8 +20,13 @@ import { EventsService } from './events.service';
 export class EventsController {
   constructor(private readonly service: EventsService) {}
 
+  @Get()
+  getEvents(@Req() req, @Query() args: GetEventsArgs) {
+    return this.service.getMany(req.user.id, args);
+  }
+
   @Post()
-  createEvent(@Req() req, @Body() dto: CreateEventDto) {
+  create(@Req() req, @Body() dto: CreateEventDto) {
     return this.service.create(req.user.id, dto);
   }
 }

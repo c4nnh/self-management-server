@@ -4,8 +4,10 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  MaxDate,
   Min,
 } from 'class-validator';
+import * as moment from 'moment-timezone';
 
 export class CreateLoanDto {
   @IsString()
@@ -21,6 +23,7 @@ export class CreateLoanDto {
 
   @IsDate()
   @IsOptional()
+  @MaxDate(moment().tz(process.env.TZ).endOf('day').toDate())
   date?: Date;
 
   @IsString()
@@ -45,11 +48,10 @@ export class UpdateLoanDto {
 
   @IsDate()
   @IsOptional()
-  @IsOptional()
+  @MaxDate(moment().tz(process.env.TZ).endOf('day').toDate())
   date?: Date;
 
   @IsString()
-  @IsOptional()
   @IsOptional()
   description?: string;
 }
