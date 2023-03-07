@@ -20,6 +20,8 @@ export class EventEntity implements Event {
 
   status: EventStatus;
 
+  groupId: string;
+
   createdAt: Date;
 
   updatedAt: Date;

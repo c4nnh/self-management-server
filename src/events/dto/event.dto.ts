@@ -1,7 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { EventPriority } from '@prisma/client';
+import { EventPriority, EventStatus } from '@prisma/client';
 import { Transform } from 'class-transformer';
 import {
+  IsBoolean,
+  IsDate,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -11,7 +13,6 @@ import {
 import * as moment from 'moment-timezone';
 import {
   IsDateAfterOtherField,
-  IsDateWithoutTime,
   IsTime,
   IsTimeBeforeOtherField,
   MustAppearWith,
@@ -27,15 +28,15 @@ export class CreateEventDto {
   @IsOptional()
   description?: string;
 
-  @IsDateWithoutTime()
-  @MinDate(moment().tz(process.env.TZ).startOf('day').toDate())
+  @IsDate()
+  @MinDate(moment().tz(process.env.TZ).toDate())
   @ApiProperty({
     example: '2023-01-01',
   })
   @Transform(({ value }) => moment(value).tz(process.env.TZ).toDate())
   startDate: Date;
 
-  @IsDateWithoutTime()
+  @IsDate()
   @IsDateAfterOtherField('startDate')
   @ApiProperty({
     example: '2023-01-01',
@@ -70,3 +71,72 @@ export class CreateEventDto {
   })
   priority?: EventPriority;
 }
+
+export class UpdateEventDto {
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  title?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  description?: string;
+
+  @IsDate()
+  @ApiPropertyOptional({
+    example: '2023-01-01T01-01-01',
+    nullable: true,
+  })
+  @Transform(({ value }) => value && moment(value).tz(process.env.TZ).toDate())
+  @IsOptional()
+  startDate?: Date;
+
+  @IsDate()
+  @ApiPropertyOptional({
+    example: '2023-01-01T01-01-01',
+    nullable: true,
+  })
+  @Transform(
+    ({ value }) =>
+      value && moment(value).tz(process.env.TZ).endOf('day').toDate(),
+  )
+  @IsOptional()
+  endDate?: Date;
+
+  @IsOptional()
+  @IsBoolean()
+  removeTime?: boolean;
+
+  @IsOptional()
+  @IsTime()
+  @ApiPropertyOptional({
+    example: '10:30:00',
+    nullable: true,
+  })
+  startTime?: string;
+
+  @IsOptional()
+  @IsTime()
+  @ApiPropertyOptional({
+    example: '11:30:00',
+    nullable: true,
+  })
+  endTime?: string;
+
+  @IsEnum(EventPriority)
+  @IsOptional()
+  @ApiPropertyOptional({
+    enum: EventPriority,
+  })
+  priority?: EventPriority;
+
+  @IsEnum(EventStatus)
+  @IsOptional()
+  @ApiPropertyOptional({
+    enum: EventStatus,
+  })
+  status?: EventStatus;
+}
+
+export class UpdateEventGroupDto extends UpdateEventDto {}

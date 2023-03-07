@@ -15,6 +15,7 @@ CREATE TABLE "event" (
     "endTime" TEXT,
     "priority" "EventPriority" NOT NULL DEFAULT 'MEDIUM',
     "status" "EventStatus" NOT NULL DEFAULT 'UPCOMING',
+    "groupId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" TEXT NOT NULL,
