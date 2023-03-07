@@ -32,6 +32,16 @@ export class EventsService {
   create = async (userId: string, dto: CreateEventDto) => {
     const { startDate, endDate } = dto;
 
+    if (!dto.startTime) {
+      await this.prisma.event.create({
+        data: {
+          ...dto,
+          userId,
+        },
+      });
+      return true;
+    }
+
     const data: Prisma.EventCreateManyInput[] = [];
 
     for (
@@ -47,8 +57,10 @@ export class EventsService {
       });
     }
 
-    return this.prisma.event.createMany({
+    await this.prisma.event.createMany({
       data,
     });
+
+    return true;
   };
 }
