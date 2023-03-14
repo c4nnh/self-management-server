@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { StripeCustomersService } from './stripe-customers.service copy';
-import { StripePaymentMethodsService } from './stripe-payment-methods.service';
-import { StripeService } from './stripe.service';
+import { StripeCustomersService } from './services/stripe-customers.service';
+import { StripePaymentMethodsService } from './services/stripe-payment-methods.service';
+import { StripeService } from './services/stripe.service';
 
 @Module({
   providers: [

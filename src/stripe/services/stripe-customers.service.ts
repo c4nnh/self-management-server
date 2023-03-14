@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStripeCustomerDto } from './dto/customer.dto';
+import { CreateStripeCustomerDto } from '../dto/customer.dto';
 import { StripeService } from './stripe.service';
 
 @Injectable()
@@ -7,7 +7,7 @@ export class StripeCustomersService {
   constructor(private readonly stripeService: StripeService) {}
 
   findOneByEmail = async (email: string) => {
-    const resp = await this.stripeService.stripe.customers.list({
+    const resp = await this.stripeService.instance.customers.list({
       email,
     });
     if (!resp.data.length) {
@@ -17,13 +17,13 @@ export class StripeCustomersService {
   };
 
   getAll = async () => {
-    const resp = await this.stripeService.stripe.customers.list();
+    const resp = await this.stripeService.instance.customers.list();
     return resp.data;
   };
 
   createCustomer = (dto: CreateStripeCustomerDto) =>
-    this.stripeService.stripe.customers.create(dto);
+    this.stripeService.instance.customers.create(dto);
 
   deleteByIds = (ids: string[]) =>
-    Promise.all(ids.map((id) => this.stripeService.stripe.customers.del(id)));
+    Promise.all(ids.map((id) => this.stripeService.instance.customers.del(id)));
 }

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { StripeService } from 'src/stripe/stripe.service';
+import { StripeCustomersService } from 'src/stripe/services/stripe-customers.service';
 import { PrismaService } from '../db/prisma.service';
 
 @Injectable()
 export class StripeJobsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly stripeService: StripeService,
+    private readonly stripeCustomersService: StripeCustomersService,
   ) {}
 
   @Cron('0 0 0 * * *', {
@@ -23,12 +23,12 @@ export class StripeJobsService {
           },
         },
       });
-      const stripeCustomers = await this.stripeService.getAll();
+      const stripeCustomers = await this.stripeCustomersService.getAll();
       const unusedCustomers = stripeCustomers.filter(
         (customer) =>
           !users.map((item) => item.stripeCustomerId).includes(customer.id),
       );
-      await this.stripeService.deleteByIds(
+      await this.stripeCustomersService.deleteByIds(
         unusedCustomers.map((item) => item.id),
       );
     } catch {
