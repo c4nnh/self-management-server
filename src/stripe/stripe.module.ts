@@ -1,14 +1,18 @@
 import { Module } from '@nestjs/common';
-import { StripeCustomersService } from './services/stripe-customers.service';
-import { StripePaymentMethodsService } from './services/stripe-payment-methods.service';
+import { AuthModule } from 'src/auth/auth.module';
+import { StripePaymentMethodsController } from './payment-methods.controller';
+import { StripeCustomersService } from './services/customers.service';
+import { StripePaymentMethodsService } from './services/payment-methods.service';
 import { StripeService } from './services/stripe.service';
 
 @Module({
+  imports: [AuthModule],
   providers: [
     StripeService,
     StripeCustomersService,
     StripePaymentMethodsService,
   ],
   exports: [StripeCustomersService, StripePaymentMethodsService],
+  controllers: [StripePaymentMethodsController],
 })
 export class StripeModule {}

@@ -11,7 +11,7 @@ export const IsDateWithoutTime = (validationOptions?: ValidationOptions) => {
     registerDecorator({
       name: 'isDateWithoutTime',
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: {
         message: `${propertyName} must be in format ${DEFAULT_DATE_FORMAT}`,
         ...validationOptions,
@@ -34,7 +34,7 @@ export const IsDateAfterOtherField = (
     registerDecorator({
       name: 'isDateAfterOtherField',
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       constraints: [property],
       options: {
         message: `${propertyName} must be after ${property}`,
@@ -59,7 +59,7 @@ export const IsTime = (validationOptions?: ValidationOptions) => {
     registerDecorator({
       name: 'isTime',
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: {
         message: `${propertyName} must be in format ${DEFAULT_TIME_FORMAT}`,
         ...validationOptions,
@@ -85,7 +85,7 @@ export const IsTimeBeforeOtherField = (
     registerDecorator({
       name: 'isTimeBeforeOtherField',
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       constraints: [property],
       options: {
         message: `${propertyName} must be before ${property}`,
@@ -99,6 +99,28 @@ export const IsTimeBeforeOtherField = (
             DEFAULT_TIME_FORMAT,
           );
           return moment(value, DEFAULT_TIME_FORMAT).isBefore(relatedValue);
+        },
+      },
+    });
+  };
+};
+
+export const IsBankCardYear = (validationOptions?: ValidationOptions) => {
+  return function (object: object, propertyName: string) {
+    registerDecorator({
+      name: 'isBankCardYear',
+      target: object.constructor,
+      propertyName,
+      options: {
+        message: 'Card year must be same or after current year',
+        ...validationOptions,
+      },
+      validator: {
+        validate(value: number) {
+          const currentYear = parseInt(
+            new Date().getFullYear().toString().slice(-2),
+          );
+          return value >= currentYear;
         },
       },
     });

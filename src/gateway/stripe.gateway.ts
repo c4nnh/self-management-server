@@ -2,7 +2,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { WebSocketGateway } from '@nestjs/websockets';
 import { PrismaService } from 'src/db/prisma.service';
 import { CreateStripeCustomerDto } from 'src/stripe/dto/customer.dto';
-import { StripeCustomersService } from 'src/stripe/services/stripe-customers.service';
+import { StripeCustomersService } from 'src/stripe/services/customers.service';
 import { EVENT_EMITTER } from '../utils';
 
 @WebSocketGateway()

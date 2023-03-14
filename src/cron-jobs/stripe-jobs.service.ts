@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { StripeCustomersService } from 'src/stripe/services/stripe-customers.service';
+import { StripeCustomersService } from 'src/stripe/services/customers.service';
 import { PrismaService } from '../db/prisma.service';
 
 @Injectable()
