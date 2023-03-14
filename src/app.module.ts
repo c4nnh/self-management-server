@@ -16,6 +16,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { LoansModule } from './loans/loans.module';
 import { TontinesModule } from './tontines/tontines.module';
 import { EventsModule } from './events/events.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { EventsModule } from './events/events.module';
     LoansModule,
     TontinesModule,
     EventsModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

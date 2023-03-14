@@ -12,6 +12,7 @@ declare global {
       FIREBASE_PRIVATE_KEY: string;
       FIREBASE_CLIENT_EMAIL: string;
       FIREBASE_BUCKET_NAME: string;
+      STRIPE_SECRET_KEY: string;
     }
   }
 }

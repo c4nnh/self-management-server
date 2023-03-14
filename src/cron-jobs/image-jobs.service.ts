@@ -1,18 +1,15 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import admin from 'firebase-admin';
-import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../db/prisma.service';
 import { ImagesService } from '../images/images.service';
 import { getImageIdFromUrl, IMAGE_FOLDER } from '../utils';
 
 @Injectable()
-export class CronJobsService {
+export class ImageJobsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly imagesService: ImagesService,
-    private readonly httpService: HttpService,
   ) {}
 
   @Cron('0 0 0 * * *', {
@@ -57,15 +54,6 @@ export class CronJobsService {
       await this.imagesService.deleteImages(unusedImageIds);
     } catch {
       console.error('Can not execute delete unused images job');
-    }
-  }
-
-  @Cron('0 */5 * * * *')
-  async keepKSMAAwake() {
-    if (process.env.NODE_ENV !== 'develop') {
-      await firstValueFrom(
-        this.httpService.get(process.env.KEEP_SM_AWAKE_HEALTH_CHECK_END_POINT),
-      );
     }
   }
 }

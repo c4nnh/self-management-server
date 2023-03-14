@@ -5,6 +5,7 @@ export const IMAGE_FOLDER = {
 
 export const EVENT_EMITTER = {
   DELETE_IMAGES: 'DELETE_IMAGES',
+  CREATE_USER: 'CREATE_USER',
 };
 
 export const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';

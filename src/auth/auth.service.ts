@@ -5,9 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { createHash } from 'crypto';
-import { CURRENCY_MASTER_DATA_SELECT } from 'src/utils';
+import { CURRENCY_MASTER_DATA_SELECT, EVENT_EMITTER } from 'src/utils';
 import { PrismaService } from '../db/prisma.service';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
@@ -26,6 +27,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly uersService: UsersService,
+    private readonly eventEmitter2: EventEmitter2,
   ) {}
 
   async register(dto: RegisterDto): Promise<ResgisterResponse> {
@@ -52,6 +54,12 @@ export class AuthService {
           select: CURRENCY_MASTER_DATA_SELECT,
         },
       },
+    });
+
+    this.eventEmitter2.emit(EVENT_EMITTER.CREATE_USER, {
+      id: user.id,
+      email: dto.email,
+      name: dto.name,
     });
 
     return {

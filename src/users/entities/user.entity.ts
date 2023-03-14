@@ -22,6 +22,8 @@ export class UserEntity implements User {
 
   hometown: string | null;
 
+  stripeCustomerId: string | null;
+
   @Exclude()
   password: string;
 
